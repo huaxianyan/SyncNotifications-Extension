@@ -24,6 +24,16 @@ export function interactionPageUrl(extensionBaseUrl: string, chromeNotificationI
   return url.href;
 }
 
+export function interactionWindowOptions(url: string): chrome.windows.CreateData {
+  return {
+    url,
+    type: 'popup',
+    focused: true,
+    width: 440,
+    height: 680,
+  };
+}
+
 export function interactionSummary(
   state: MirroredNotificationState,
   sourceName: string,

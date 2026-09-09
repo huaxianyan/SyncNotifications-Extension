@@ -50,6 +50,7 @@ import { ActionResultStatus } from '../protocol/generated/notification/v1/payloa
 import {
   interactionPageUrl,
   interactionSummary,
+  interactionWindowOptions,
   resolveCurrentAction,
   validateReplyText,
 } from './notification-interaction';
@@ -930,9 +931,9 @@ async function openNotificationInteraction(notificationId: string): Promise<void
     await notificationPresentationPreferencesStore.load(),
     state.sourceDeviceId,
   )) return;
-  await chrome.tabs.create({
-    url: interactionPageUrl(chrome.runtime.getURL('/'), notificationId),
-  });
+  await chrome.windows.create(interactionWindowOptions(
+    interactionPageUrl(chrome.runtime.getURL('/'), notificationId),
+  ));
 }
 
 async function getNotificationInteraction(

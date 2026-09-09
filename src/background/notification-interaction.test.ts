@@ -3,6 +3,7 @@ import type { MirroredNotificationState } from '../crypto/indexeddb-notification
 import {
   interactionPageUrl,
   interactionSummary,
+  interactionWindowOptions,
   resolveCurrentAction,
   validateReplyText,
 } from './notification-interaction';
@@ -39,6 +40,13 @@ describe('Notification interaction window', () => {
   it('opens one notification without exposing internal source identifiers', () => {
     const url = interactionPageUrl('chrome-extension://example/', 'sn1:notification');
     expect(url).toBe('chrome-extension://example/interaction/index.html?notification=sn1%3Anotification');
+    expect(interactionWindowOptions(url)).toEqual({
+      url,
+      type: 'popup',
+      focused: true,
+      width: 440,
+      height: 680,
+    });
 
     const summary = interactionSummary(state(), 'Pixel');
     expect(summary).toMatchObject({

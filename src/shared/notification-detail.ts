@@ -1,5 +1,8 @@
 import type { NotificationInteractionSummary } from '../background/notification-interaction';
-import { validateReplyText } from '../background/notification-interaction';
+import {
+  validateReplyText,
+  waitForNotificationRemoval,
+} from '../background/notification-interaction';
 import { message } from './i18n';
 
 type NotificationOperation =
@@ -14,6 +17,11 @@ interface OperationResponse {
 
 interface ReplyOperationResponse {
   state: 'pending' | 'succeeded' | 'changed' | 'failed' | 'unknown' | 'unavailable';
+}
+
+interface InteractionLookupResponse {
+  notification?: NotificationInteractionSummary;
+  lookupFailed?: boolean;
 }
 
 export function mountNotificationDetail(
@@ -36,6 +44,23 @@ export function mountNotificationDetail(
   status.setAttribute('aria-live', 'polite');
 
   const controls: Array<HTMLButtonElement | HTMLTextAreaElement> = [];
+  const closeWhenNotificationIsRemoved = (): void => {
+    void waitForNotificationRemoval(
+      async () => {
+        try {
+          const response = await chrome.runtime.sendMessage({
+            type: 'get-notification-interaction',
+            chromeNotificationId: notification.chromeNotificationId,
+          }) as InteractionLookupResponse;
+          if (response.lookupFailed) return 'lookup-failed';
+          return response.notification === undefined ? 'removed' : 'present';
+        } catch {
+          return 'lookup-failed';
+        }
+      },
+      () => new Promise((resolve) => window.setTimeout(resolve, 250)),
+    ).then((removed) => { if (removed) window.close(); });
+  };
   const invoke = async (operation: NotificationOperation): Promise<void> => {
     setDisabled(controls, true);
     status.textContent = message('interactionSending');
@@ -48,9 +73,11 @@ export function mountNotificationDetail(
     switch (response.outcome) {
       case 'sent':
         status.textContent = message('interactionRequestSent');
+        closeWhenNotificationIsRemoved();
         return;
       case 'queued':
         status.textContent = message('interactionRequestQueued');
+        closeWhenNotificationIsRemoved();
         return;
       case 'changed':
         status.textContent = message('interactionChanged');
@@ -66,6 +93,7 @@ export function mountNotificationDetail(
         }
         status.textContent = message('interactionReplyWaiting');
         status.textContent = message(await waitForReplyResult(response.idempotencyKey));
+        closeWhenNotificationIsRemoved();
     }
   };
 

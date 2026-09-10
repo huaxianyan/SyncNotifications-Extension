@@ -379,7 +379,7 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) =
     case 'get-notification-interaction':
       void getNotificationInteraction(message).then(
         (notification) => sendResponse({ notification }),
-        () => sendResponse({ notification: undefined }),
+        () => sendResponse({ notification: undefined, lookupFailed: true }),
       );
       return true;
 

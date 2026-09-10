@@ -34,6 +34,21 @@ export function interactionWindowOptions(url: string): chrome.windows.CreateData
   };
 }
 
+export type NotificationPresence = 'present' | 'removed' | 'lookup-failed';
+
+export async function waitForNotificationRemoval(
+  lookup: () => Promise<NotificationPresence>,
+  pause: () => Promise<void>,
+  maximumAttempts = 120,
+): Promise<boolean> {
+  for (let attempt = 0; attempt < maximumAttempts; attempt += 1) {
+    const presence = await lookup();
+    if (presence === 'removed') return true;
+    await pause();
+  }
+  return false;
+}
+
 export function interactionSummary(
   state: MirroredNotificationState,
   sourceName: string,

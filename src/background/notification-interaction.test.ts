@@ -6,6 +6,7 @@ import {
   interactionWindowOptions,
   resolveCurrentAction,
   validateReplyText,
+  waitForNotificationRemoval,
 } from './notification-interaction';
 
 const state = (): MirroredNotificationState => ({
@@ -67,6 +68,21 @@ describe('Notification interaction window', () => {
     expect(validateReplyText('hello')).toBe('valid');
     expect(validateReplyText('  \n')).toBe('required');
     expect(validateReplyText('你'.repeat(1_334))).toBe('too-long');
+  });
+
+  it('closes after an operation removes its notification despite a transient lookup failure', async () => {
+    const states = ['lookup-failed', 'present', 'removed'] as const;
+    let lookups = 0;
+    let pauses = 0;
+
+    const removed = await waitForNotificationRemoval(
+      async () => states[lookups++] ?? 'present',
+      async () => { pauses += 1; },
+    );
+
+    expect(removed).toBe(true);
+    expect(lookups).toBe(3);
+    expect(pauses).toBe(2);
   });
 
   it('resolves an action only while the interaction page revision is current', () => {

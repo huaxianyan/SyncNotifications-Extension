@@ -7,6 +7,7 @@ import {
   normalizeServerOrigin,
 } from '../transport/indexeddb-transport-credential-store';
 import { localizeDocument, message } from '../shared/i18n';
+import { resolveSettingsPage } from './settings-navigation';
 
 interface OptionsOverview {
   state: 'not-configured' | 'waiting-approval' | 'connecting' | 'online' | 'offline' |
@@ -32,6 +33,8 @@ type PresentationPreferences = Pick<OptionsOverview,
   'badgeEnabled' | 'nativeNotificationsEnabled' | 'showBody' | 'showImages' |
   'silentNotifications' | 'mutedSourceDeviceIds'>;
 
+const settingsPages = Array.from(document.querySelectorAll<HTMLElement>('.settings-page'));
+const settingsPageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-settings-page]'));
 const identityStore = new IndexedDbIdentityStore();
 const credentialStore = new IndexedDbTransportCredentialStore();
 const pendingMembershipStore = new IndexedDbPendingMembershipStore();
@@ -76,6 +79,8 @@ let savedPreferences: PresentationPreferences = {
 };
 
 localizeDocument();
+showSettingsPage();
+window.addEventListener('hashchange', showSettingsPage);
 versionOutput.textContent = message('extensionVersionValue', chrome.runtime.getManifest().version);
 
 registrationForm.addEventListener('submit', (event) => {
@@ -150,6 +155,15 @@ confirmClear.addEventListener('click', (event) => {
     .catch(() => { notificationSettingsStatus.textContent = message('optionsClearFailed'); })
     .finally(() => { confirmClear.disabled = false; });
 });
+
+function showSettingsPage(): void {
+  const selected = resolveSettingsPage(window.location.hash);
+  for (const page of settingsPages) page.hidden = page.id !== selected;
+  for (const link of settingsPageLinks) {
+    if (link.dataset.settingsPage === selected) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+}
 
 async function render(): Promise<void> {
   const response = await chrome.runtime.sendMessage({ type: 'get-options-overview' }) as {

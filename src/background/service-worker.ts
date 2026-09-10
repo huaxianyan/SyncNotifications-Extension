@@ -856,6 +856,7 @@ async function clearLocalNotificationState(): Promise<void> {
 async function getPopupNotifications(): Promise<{
   state: string;
   notifications: Array<ReturnType<typeof interactionSummary> & {
+    sourceKey: string;
     isNew: boolean;
     updatedAtUnixMs: number;
   }>;
@@ -885,6 +886,7 @@ async function getPopupNotifications(): Promise<{
       if (sourceName === undefined) continue;
       notifications.push({
         ...presentationSummary(presentation.state, sourceName, preferences),
+        sourceKey: toHex(presentation.state.sourceDeviceId),
         isNew: presentation.isNew,
         updatedAtUnixMs: presentation.updatedAtUnixMs,
       });

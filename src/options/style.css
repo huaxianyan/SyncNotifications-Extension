@@ -38,9 +38,11 @@ body { margin: 0; background: var(--background); color: var(--text); }
 nav { position: sticky; top: 88px; align-self: start; display: grid; gap: 4px; }
 nav a { min-height: 44px; display: flex; align-items: center; padding: 8px 12px; border-radius: 10px; color: var(--text); text-decoration: none; font-weight: 600; }
 nav a:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+nav a[aria-current="page"] { background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary); }
 main { min-width: 0; }
-section { scroll-margin-top: 88px; padding: 8px 0 40px; border-bottom: 1px solid var(--border); }
-section + section { padding-top: 40px; }
+.settings-page > section { padding: 8px 0 40px; }
+.settings-page > section + section { padding-top: 32px; border-top: 1px solid var(--border); }
+.settings-page[hidden] { display: none; }
 h1 { margin: 0 0 10px; font-size: 28px; }
 h2 { margin: 0 0 8px; font-size: 17px; }
 p { line-height: 1.5; }
@@ -86,8 +88,8 @@ dialog::backdrop { background: rgb(0 0 0 / 45%); }
 @media (max-width: 760px) {
   .top-bar { padding-inline: 16px; }
   .layout { grid-template-columns: 1fr; width: min(100% - 32px, 760px); padding-top: 18px; }
-  nav { position: static; grid-template-columns: repeat(6, max-content); overflow-x: auto; padding-bottom: 4px; }
-  section { scroll-margin-top: 72px; }
+  nav { position: static; grid-template-columns: repeat(5, max-content); overflow-x: auto; padding-bottom: 4px; }
+  .settings-page > section { padding-top: 8px; }
 }
 
 @media (max-width: 520px) {

@@ -13,15 +13,15 @@
     </header>
     <div class="layout">
       <nav aria-label="Settings" data-i18n-aria-label="settingsNavigation">
-        <a href="#connection" data-i18n="optionsConnection">Connection</a>
-        <a href="#devices" data-i18n="optionsDevices">Devices</a>
-        <a href="#notifications" data-i18n="optionsNotifications">Notifications</a>
+        <a href="#connection-devices" data-settings-page="connection-devices" data-i18n="optionsConnectionDevices">Connection and devices</a>
+        <a href="#notifications" data-settings-page="notifications" data-i18n="optionsNotifications">Notifications</a>
         <a href="../shortcuts/index.html" data-i18n="optionsShortcuts">Shortcuts</a>
-        <a href="#data-privacy" data-i18n="optionsDataPrivacy">Data and privacy</a>
-        <a href="#about" data-i18n="optionsAbout">About</a>
+        <a href="#data-privacy" data-settings-page="data-privacy" data-i18n="optionsDataPrivacy">Data and privacy</a>
+        <a href="#about" data-settings-page="about" data-i18n="optionsAbout">About</a>
       </nav>
 
       <main>
+        <div id="connection-devices" class="settings-page">
         <section id="connection" aria-labelledby="connection-title">
           <h1 id="connection-title" data-i18n="optionsConnection">Connection</h1>
           <div class="card status-card">
@@ -67,8 +67,10 @@
           <p id="devices-empty" class="empty" data-i18n="optionsDevicesUnavailable">Device information will be available after approval.</p>
           <p class="supporting" data-i18n="optionsDeviceAdminBoundary">Approve, remove, or reject devices in the server administration page.</p>
         </section>
+        </div>
 
-        <section id="notifications" aria-labelledby="notifications-title">
+        <div id="notifications" class="settings-page" hidden>
+        <section aria-labelledby="notifications-title">
           <h1 id="notifications-title" data-i18n="optionsNotifications">Notifications</h1>
           <div class="card">
             <label class="switch-row">
@@ -104,8 +106,10 @@
           <p class="supporting" data-i18n="optionsLocalDisplayBoundary">Browser display settings affect only this Chrome device. Android controls which notifications may leave the phone.</p>
           <p id="notification-settings-status" role="status" aria-live="polite"></p>
         </section>
+        </div>
 
-        <section id="data-privacy" aria-labelledby="data-privacy-title">
+        <div id="data-privacy" class="settings-page" hidden>
+        <section aria-labelledby="data-privacy-title">
           <h1 id="data-privacy-title" data-i18n="optionsDataPrivacy">Data and privacy</h1>
           <div class="card">
             <h2 data-i18n="optionsLocalDataTitle">Local notification data</h2>
@@ -113,14 +117,17 @@
             <button id="clear-local-notifications" class="danger-secondary" type="button" data-i18n="optionsClearLocalNotifications">Clear local notification list</button>
           </div>
         </section>
+        </div>
 
-        <section id="about" aria-labelledby="about-title">
+        <div id="about" class="settings-page" hidden>
+        <section aria-labelledby="about-title">
           <h1 id="about-title" data-i18n="optionsAbout">About</h1>
           <div class="card">
             <p data-i18n="optionsLicense">SevenMirror is provided under the GNU GPLv3 license.</p>
             <p><a href="https://github.com/huaxianyan/SevenMirror-Extension" target="_blank" rel="noreferrer" data-i18n="optionsProjectLink">Project documentation</a></p>
           </div>
         </section>
+        </div>
       </main>
     </div>
 

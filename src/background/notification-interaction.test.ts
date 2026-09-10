@@ -85,6 +85,19 @@ describe('Notification interaction window', () => {
     expect(pauses).toBe(2);
   });
 
+  it('retains the interaction window while its notification still exists', async () => {
+    let pauses = 0;
+
+    const removed = await waitForNotificationRemoval(
+      async () => 'present',
+      async () => { pauses += 1; },
+      2,
+    );
+
+    expect(removed).toBe(false);
+    expect(pauses).toBe(2);
+  });
+
   it('resolves an action only while the interaction page revision is current', () => {
     const current = state();
     const actionId = '04'.repeat(16);
